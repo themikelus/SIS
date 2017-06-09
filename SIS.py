@@ -138,8 +138,5 @@ class SISSimulation:
 
 if __name__ == '__main__':
     sis = SISSimulation(1.0, 51,
-                        '/home/themikelus/Documents/compu_anterior/MASTER/Semestre #2/Complex Networks/A4/plots')
+                        'YOUR_OUTPUT_PATH')
     sis.start(10, 0.2, 1000, 900)
-    #sis.loadGraph('/home/themikelus/Documents/compu_anterior/MASTER/Semestre #2/Complex Networks/A4/toy/circle9.net')
-    #sis.loadGraph('/home/themikelus/Documents/compu_anterior/MASTER/Semestre #2/Complex Networks/A4/toy/20x2+5x2.net')
-    #sis.loadGraph('/home/themikelus/Documents/compu_anterior/MASTER/Semestre #2/Complex Networks/A4/toy/graph3+2+3.net')
