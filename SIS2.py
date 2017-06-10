@@ -5,8 +5,7 @@ import numpy as np
 import os
 import time
 
-from A2.BA import BA
-from A2.ER import ER
+from ER import ER
 
 
 class SISSimulation:
@@ -44,26 +43,19 @@ class SISSimulation:
 
     def simulate_for_prob_infection_range(self, n_reps, prob_being_initially_infected, t_max, t_trans):
         avrgs_of_infections = []
-
+        network = ER().ER(50, 0.1)
+        infected_nodes = self.infecting_the_network(network, prob_being_initially_infected)
         for index, prob_infection in enumerate(self.prob_infection_range):
-            avrgs_of_infections.append(self.simulate_for_prob_infection(n_reps, prob_being_initially_infected, prob_infection, t_max, t_trans))
+            avrgs_of_infections.append(self.simulate_for_prob_infection(network, infected_nodes, n_reps, prob_being_initially_infected, prob_infection, t_max, t_trans))
             print '\t{} infection probability ({}) = {}'.format(index, prob_infection, avrgs_of_infections[-1])
 
         return avrgs_of_infections
 
-    def simulate_for_prob_infection(self, n_reps, prob_being_initially_infected, prob_infection, t_max, t_trans):
-        network = ER().ER(50, 0.1)
-        #network = BA().BA(500, 10, 3)
-
-        infected_nodes = self.infecting_the_network(network, prob_being_initially_infected)
-        #print 'initial infected nodes => {} / {} = {}'.format(len(infected_nodes), float(len(network.nodes())), len(infected_nodes) / float(len(network.nodes())))
-
+    def simulate_for_prob_infection(self, network, infected_nodes, n_reps, prob_being_initially_infected, prob_infection, t_max, t_trans):
         stationary = False
-
         avrg_over_repetitions = []
 
         for rep in range(1, n_reps + 1):
-            #print '\nRep #{}'.format(rep)
             avrg_over_time_steps = []
 
             for i in range(t_max, 0, -1):
@@ -92,10 +84,8 @@ class SISSimulation:
 
 
                 infected_nodes = infected_nodes.difference(susceptible_nodes_next).union(infected_nodes_next)
-                #print len(infected_nodes)
 
                 if stationary or i == (t_max - t_trans):
-                    #print 'step #{} avrg_over_time -> {} / {} = {}'.format(i, len(infected_nodes), float(len(network.nodes())), len(infected_nodes) / float(len(network.nodes())))
                     avrg_over_time_steps.append(len(infected_nodes) / float(len(network.nodes())))
                     stationary = True
 
@@ -127,5 +117,7 @@ class SISSimulation:
         plt.clf()
 
 if __name__ == '__main__':
-    sis = SISSimulation(1.0, 51, 'YOUR_OUTPUT_PATH')
+    # sis = SISSimulation(1.0, 51, 'YOUR_OUTPUT_PATH')
+    # sis.start(10, 0.2, 1000, 900)
+    sis = SISSimulation(1.0, 51, 'outputs/')
     sis.start(10, 0.2, 1000, 900)
