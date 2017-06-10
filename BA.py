@@ -6,8 +6,8 @@ from scipy import stats
 
 import numpy as np
 
-from A2.ER import ER
-from plotter.Plotter import Plotter
+from ER import ER
+#from plotter.Plotter import Plotter
 
 class BA:
     def BA(self, previous_nodes, n, m, output_path=None):
@@ -46,24 +46,6 @@ class BA:
                         break
 
         end_nodes = set(G.nodes()) - set(begin_nodes)
-
-        if output_path is not None:
-            title = 'Barabasi & Albert G = (n, m)  -->  G = ({}, {})  --> Previous nodes = {}'.format(n, m, previous_nodes)
-            title = title + '\nEstimation of the exponent is = ' + str(self.getEstimationOfTheExponent(G))
-            plt.title(title)
-            nx.draw_networkx_labels(G, pos=nx.shell_layout(G), font_size=10, font_family='sans-serif')
-            nx.draw_networkx_nodes(G, pos=nx.shell_layout(G), nodelist=begin_nodes, node_color='r')
-            nx.draw_networkx_nodes(G, pos=nx.shell_layout(G), nodelist=end_nodes, node_color='g')
-            nx.draw_networkx_edges(G, pos=nx.shell_layout(G))
-            plt.savefig(os.path.join(output_path, 'BA' + '_' + str(previous_nodes) + '_' + str(n) + '_' + str(m) + '.png'))
-            plt.clf()
-
-            adjacency_matrix = nx.to_numpy_matrix(G)
-            max_k = previous_nodes + n
-            binomial_distribution = self.getProbDegreeDistribution(max_k, m)
-
-            plotter = Plotter()
-            plotter.histLogLogScalePDF_BA(binomial_distribution, previous_nodes, n, m, adjacency_matrix, output_path)
 
         return G
 
