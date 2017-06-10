@@ -5,19 +5,34 @@ import numpy as np
 import os
 import time
 
-from ER import ER
-
+from BA import BA
 
 class SISSimulation:
-    prob_spontaneous_recovery = 0.0
+    prob_spontaneous_recovery = None
     prob_infection_range = [0]
+    n_reps = None
+    prob_being_initially_infected = None
+    t_max = None
+    t_trans = None
     output_path = None
 
-    def __init__(self, prob_spontaneous_recovery, prob_infection_range, output_path=None):
+    def __init__(self,
+                 prob_spontaneous_recovery,
+                 prob_infection_range,
+                 n_reps,
+                 prob_being_initially_infected,
+                 t_max,
+                 t_trans,
+                 output_path=None):
         self.prob_spontaneous_recovery = prob_spontaneous_recovery
+
         for i in range(1, prob_infection_range):
             self.prob_infection_range.append(self.prob_infection_range[-1] + (1.0 / prob_infection_range))
 
+        self.n_reps = n_reps
+        self.prob_being_initially_infected = prob_being_initially_infected
+        self.t_max = t_max
+        self.t_trans = t_trans
         self.output_path = output_path
 
     def load_network(self, pajek_filepath, show=False):
@@ -29,11 +44,14 @@ class SISSimulation:
 
         return graph
 
-    def start(self, n_reps, prob_being_initially_infected, t_max, t_trans):
+    def start(self):
         start_time = time.time()
         print '---starting simulation---'
 
-        avrgs_of_infections = self.simulate_for_prob_infection_range(n_reps, prob_being_initially_infected, t_max, t_trans)
+        avrgs_of_infections = self.simulate_for_prob_infection_range(self.n_reps,
+                                                                     self.prob_being_initially_infected,
+                                                                     self.t_max,
+                                                                     self.t_trans)
 
         self.plot(self.prob_infection_range, avrgs_of_infections)
 
@@ -42,7 +60,7 @@ class SISSimulation:
 
     def simulate_for_prob_infection_range(self, n_reps, prob_being_initially_infected, t_max, t_trans):
         avrgs_of_infections = []
-        network = ER().ER(500, 0.1)
+        network = BA().BA(200, 300, 25)
         adjacency_matrix = nx.to_numpy_matrix(network)
         infected_nodes = self.infecting_the_network(network, prob_being_initially_infected)
         for index, prob_infection in enumerate(self.prob_infection_range):
@@ -130,17 +148,26 @@ class SISSimulation:
 
         return infected_nodes
 
+    def create_pajek_file(self, network):
+        network = nx.write_pajek(network, self.output_path)
+
     def plot(self, x, y):
+        title = 'BA (200, 300, 25)'
+        title += '\nSIS (' + r'$\mu = {},\rho$0 = {})'.format(self.prob_spontaneous_recovery, self.prob_being_initially_infected)
+        title += '\nN-rep={},   T-max={},   T-trans={}'.format(self.n_reps, self.t_max, self.t_trans)
+        plt.title(title)
+        plt.xlabel(r'$\beta$', fontsize=18)
+        plt.ylabel(r'$\rho$', fontsize=18)
+
         plt.plot(x, y, linestyle='-')
         axes = plt.gca()
         axes.set_xlim([0, 1])
         axes.set_ylim([0, 1])
         plt.grid()
-        plt.savefig(os.path.join(self.output_path, 'A4' + '_' + str(random.randint(0, 10000)) + '.png'))
+        plt.tight_layout()
+        plt.savefig(os.path.join(self.output_path, 'A4' + 'BA_200_300_25_u' + str(self.prob_spontaneous_recovery) + '.png'))
         plt.clf()
 
 if __name__ == '__main__':
-    # sis = SISSimulation(1.0, 51, 'YOUR_OUTPUT_PATH')
-    # sis.start(10, 0.2, 1000, 900)
-    sis = SISSimulation(1.0, 51, 'outputs/')
-    sis.start(10, 0.2, 1000, 900)
+    sis = SISSimulation(1.0, 51, 50, 0.2, 1000, 900, 'outputs/')
+    sis.start()
