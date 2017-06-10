@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import random
 import math
 
-from plotter.Plotter import Plotter
+#from plotter.Plotter import Plotter
 
 class ER:
     """Erdos-Renyi G = (n, p).
@@ -39,8 +39,8 @@ class ER:
             max_k = n
             binomial_distribution = self.getBinomialDistribution(max_k, n, p)
 
-            plotter = Plotter()
-            plotter.histLinearScalePDF_ER(binomial_distribution, p, adjacency_matrix, output_path)
+            #plotter = Plotter()
+            #plotter.histLinearScalePDF_ER(binomial_distribution, p, adjacency_matrix, output_path)
 
             # comienza desde 0 bin
             #plotter.histLinearScalePDF_ER_HISTO(binomial_distribution, p, adjacency_matrix, output_path)
