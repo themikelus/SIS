@@ -15,6 +15,7 @@ class SISSimulation:
     t_max = None
     t_trans = None
     output_path = None
+    filename = None
 
     def __init__(self,
                  prob_spontaneous_recovery,
@@ -61,6 +62,10 @@ class SISSimulation:
     def simulate_for_prob_infection_range(self, n_reps, prob_being_initially_infected, t_max, t_trans):
         avrgs_of_infections = []
         network = ER().ER(500, 0.4)
+
+        self.filename = os.path.join(self.output_path, 'A4' + 'ER_500_04_u')
+        nx.write_pajek(network, self.filename + '.net')
+
         adjacency_matrix = nx.to_numpy_matrix(network)
         infected_nodes = self.infecting_the_network(network, prob_being_initially_infected)
         for index, prob_infection in enumerate(self.prob_infection_range):
@@ -165,7 +170,8 @@ class SISSimulation:
         axes.set_ylim([0, 1])
         plt.grid()
         plt.tight_layout()
-        plt.savefig(os.path.join(self.output_path, 'A4' + 'ER_500_04_u' + str(self.prob_spontaneous_recovery) + '.png'))
+
+        plt.savefig(self.filename + '.png')
         plt.clf()
 
 if __name__ == '__main__':
