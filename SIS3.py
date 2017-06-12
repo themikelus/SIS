@@ -5,6 +5,8 @@ import numpy as np
 import os
 import time
 
+from networkx.utils import powerlaw_sequence
+
 from ER import ER
 
 class SISSimulation:
@@ -57,13 +59,16 @@ class SISSimulation:
         self.plot(self.prob_infection_range, avrgs_of_infections)
 
         end_time = time.time() - start_time
-        print '---simulation finished in {} hours, {} mins , {} secs ---'.format(3600 % 24, round(end_time / 60 % 60), round(end_time % 60, 2))
+        print '---simulation finished in {} hours, {} mins , {} secs ---'.format(round(end_time / 3600) % 24,
+                                                                                 round(end_time / 60 % 60),
+                                                                                 round(end_time % 60, 2))
 
     def simulate_for_prob_infection_range(self, n_reps, prob_being_initially_infected, t_max, t_trans):
         avrgs_of_infections = []
-        network = ER().ER(500, 0.4)
+        #network = ER().ER(500, 0.4)
+        network = nx.configuration_model(nx.utils.create_degree_sequence(n=500, exponent=2.7, sfunction=powerlaw_sequence))
 
-        self.filename = os.path.join(self.output_path, 'A4' + 'ER_500_04_u')
+        self.filename = os.path.join(self.output_path, 'A4' + 'CM_500_27')
         nx.write_pajek(network, self.filename + '.net')
 
         adjacency_matrix = nx.to_numpy_matrix(network)
@@ -157,7 +162,7 @@ class SISSimulation:
         network = nx.write_pajek(network, self.output_path)
 
     def plot(self, x, y):
-        title = 'ER (500, 0.4)'
+        title = 'CM (500, 2.7)'
         title += '\nSIS (' + r'$\mu = {},\rho$0 = {})'.format(self.prob_spontaneous_recovery, self.prob_being_initially_infected)
         title += '\nN-rep={},   T-max={},   T-trans={}'.format(self.n_reps, self.t_max, self.t_trans)
         plt.title(title)
@@ -175,5 +180,5 @@ class SISSimulation:
         plt.clf()
 
 if __name__ == '__main__':
-    sis = SISSimulation(1.0, 51, 50, 0.2, 1000, 900, 'outputs/')
+    sis = SISSimulation(0.7, 51, 50, 0.2, 1000, 900, 'outputs/')
     sis.start()
