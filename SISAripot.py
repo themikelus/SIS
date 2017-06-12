@@ -156,5 +156,5 @@ class SISSimulation:
         plt.clf()
 
 if __name__ == '__main__':
-    sis = SISSimulation(0.6, 51, 50, 0.2, 1000, 900, 'outputs/')
+    sis = SISSimulation(0.1, 51, 50, 0.2, 1000, 900, 'outputs/')
     sis.start()
