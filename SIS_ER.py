@@ -68,7 +68,7 @@ class SISSimulation:
         network = ER().ER(500, 0.4)
         #network = nx.configuration_model(nx.utils.create_degree_sequence(n=500, exponent=2.7, sfunction=powerlaw_sequence))
 
-        self.filename = os.path.join(self.output_path, 'A4' + 'ER_500_04_u01')
+        self.filename = os.path.join(self.output_path, 'A4' + 'ER_500_04_u07')
         nx.write_pajek(network, self.filename + '.net')
 
         adjacency_matrix = nx.to_numpy_matrix(network)
@@ -180,5 +180,5 @@ class SISSimulation:
         plt.clf()
 
 if __name__ == '__main__':
-    sis = SISSimulation(0.5, 51, 50, 0.2, 1000, 900, 'outputs/')
+    sis = SISSimulation(0.7, 51, 50, 0.2, 1000, 900, 'outputs/')
     sis.start()
